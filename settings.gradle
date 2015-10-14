@@ -1,0 +1,4 @@
+rootProject.name = 'fernet'
+
+include ':fernet-core'
+include ':fernet-guice'

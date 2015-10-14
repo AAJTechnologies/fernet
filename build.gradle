@@ -1,0 +1,22 @@
+allprojects {
+	version = '0.0.1-SNAPSHOT'
+	group = 'com.fernet'
+
+	repositories {
+		mavenLocal()
+	    mavenCentral()
+	}
+}
+
+subprojects {
+	apply plugin: 'eclipse'
+	apply plugin: 'java'
+	apply plugin: 'maven'
+
+	sourceCompatibility = 1.7
+
+	dependencies {
+		compile "com.google.guava:guava:18.0"
+		testCompile "junit:junit:4.12"
+	}
+}
