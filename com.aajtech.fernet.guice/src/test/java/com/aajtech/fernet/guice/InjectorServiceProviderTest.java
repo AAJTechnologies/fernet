@@ -1,4 +1,4 @@
-package com.fernet.guice;
+package com.aajtech.fernet.guice;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

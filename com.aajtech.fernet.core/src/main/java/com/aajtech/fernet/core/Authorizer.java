@@ -1,4 +1,4 @@
-package com.fernet;
+package com.aajtech.fernet.core;
 
 import javax.servlet.http.HttpServletRequest;
 

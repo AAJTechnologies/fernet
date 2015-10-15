@@ -1,10 +1,10 @@
-package com.fernet.guice;
+package com.aajtech.fernet.guice;
 
 import static java.util.Objects.requireNonNull;
 
 import javax.inject.Inject;
 
-import com.fernet.ServiceProvider;
+import com.aajtech.fernet.core.ServiceProvider;
 import com.google.inject.Injector;
 
 class InjectorServiceProvider implements ServiceProvider {

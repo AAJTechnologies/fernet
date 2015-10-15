@@ -1,4 +1,4 @@
-package com.fernet.jaxrs;
+package com.aajtech.fernet.core.jaxrs;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,8 +20,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
-import com.fernet.HttpMethod;
-import com.fernet.MethodResolver;
+import com.aajtech.fernet.core.HttpMethod;
+import com.aajtech.fernet.core.MethodResolver;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;

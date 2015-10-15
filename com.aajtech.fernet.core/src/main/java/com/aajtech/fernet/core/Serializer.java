@@ -1,4 +1,4 @@
-package com.fernet;
+package com.aajtech.fernet.core;
 
 public interface Serializer {
 	<T> T fromString(String data, Class<T> type);
