@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,17 +25,14 @@ public class RestFilter implements Filter {
 	private final MethodResolver methodResolver;
 	private final ServiceProvider serviceProvider;
 	private final Map<String, Serializer> serializers;
-	private final Authorizer authorizer;
 
 	@Inject
 	public RestFilter(MethodResolver methodResolver,
 			ServiceProvider serviceProvider,
-			Map<String, Serializer> serializers,
-			@Nullable Authorizer authorizer) {
+			Map<String, Serializer> serializers) {
 		this.methodResolver = requireNonNull(methodResolver);
 		this.serviceProvider = requireNonNull(serviceProvider);
 		this.serializers = requireNonNull(serializers);
-		this.authorizer = authorizer;
 	}
 
 	@Override
@@ -54,11 +49,6 @@ public class RestFilter implements Filter {
 
 			Method method = methodResolver.resolveMethod(httpMethod, path);
 			if (method != null) {
-				if (authorizer != null && !authorizer.isAuthorized(req)) {
-					resp.sendError(HttpURLConnection.HTTP_FORBIDDEN);
-					return;
-				}
-
 				Object[] args = parseStringArgs(
 						getStringArgs(req, path, method), req, method);
 
