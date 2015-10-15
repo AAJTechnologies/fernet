@@ -1,4 +1,4 @@
-rootProject.name = 'fernet'
+rootProject.name = 'com.aajtech.fernet'
 
-include ':fernet-core'
-include ':fernet-guice'
+include ':com.aajtech.fernet.core'
+include ':com.aajtech.fernet.guice'

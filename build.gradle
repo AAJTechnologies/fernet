@@ -1,10 +1,13 @@
 allprojects {
-	version = '0.0.1-SNAPSHOT'
-	group = 'com.fernet'
+	version = '0.1-SNAPSHOT'
+	group = 'com.aajtech.fernet'
 
 	repositories {
 		mavenLocal()
 	    mavenCentral()
+    	maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+	    }
 	}
 }
 
@@ -12,6 +15,24 @@ subprojects {
 	apply plugin: 'eclipse'
 	apply plugin: 'java'
 	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
+	
+	publishing {
+	    publications {
+	        mavenJava(MavenPublication) {
+	            from components.java
+	        }
+	    }
+	    repositories {
+        	maven {
+				credentials {
+					username = sonatypeUser
+					password = sonatypePassword
+				}
+	            url "https://oss.sonatype.org/content/repositories/snapshots"
+    	    }
+    	}
+	}
 
 	sourceCompatibility = 1.7
 
