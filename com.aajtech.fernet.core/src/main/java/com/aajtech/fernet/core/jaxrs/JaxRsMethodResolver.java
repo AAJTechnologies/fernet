@@ -132,7 +132,7 @@ public class JaxRsMethodResolver implements MethodResolver {
 	private String parseMimeType(String contentType) {
 		if (contentType != null) {
 			int pos = contentType.indexOf(';');
-			return pos == 0 ? contentType : contentType.substring(0, pos)
+			return pos <= 0 ? contentType : contentType.substring(0, pos)
 					.trim();
 		} else {
 			return defaultContentType;
