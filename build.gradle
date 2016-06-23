@@ -1,6 +1,6 @@
 allprojects {
 	version = '0.1-SNAPSHOT'
-	group = 'com.aajtech.fernet'
+	group = 'com.aajtech.nibiru.fernet'
 
 	repositories {
 		mavenLocal()
