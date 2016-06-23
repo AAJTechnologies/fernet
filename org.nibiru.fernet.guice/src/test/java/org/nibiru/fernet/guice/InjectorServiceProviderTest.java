@@ -1,4 +1,6 @@
-package com.aajtech.fernet.guice;
+package org.nibiru.fernet.guice;
+
+import org.nibiru.fernet.guice.InjectorServiceProvider;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

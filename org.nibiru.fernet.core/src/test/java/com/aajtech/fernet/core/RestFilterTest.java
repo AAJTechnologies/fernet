@@ -1,5 +1,7 @@
 package com.aajtech.fernet.core;
 
+import org.nibiru.fernet.core.RestFilter;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

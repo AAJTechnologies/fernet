@@ -1,13 +1,14 @@
-package com.aajtech.fernet.guice;
+package org.nibiru.fernet.guice;
 
 import static java.util.Objects.requireNonNull;
 
-import com.aajtech.fernet.core.MethodResolver;
-import com.aajtech.fernet.core.RestFilter;
-import com.aajtech.fernet.core.Serializer;
-import com.aajtech.fernet.core.ServiceProvider;
-import com.aajtech.fernet.core.gson.GsonSerializer;
-import com.aajtech.fernet.core.jaxrs.JaxRsMethodResolver;
+import org.nibiru.fernet.core.MethodResolver;
+import org.nibiru.fernet.core.RestFilter;
+import org.nibiru.fernet.core.Serializer;
+import org.nibiru.fernet.core.ServiceProvider;
+import org.nibiru.fernet.core.gson.GsonSerializer;
+import org.nibiru.fernet.core.jaxrs.JaxRsMethodResolver;
+
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;

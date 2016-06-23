@@ -1,4 +1,4 @@
-package com.aajtech.fernet.core.gson;
+package org.nibiru.fernet.core.gson;
 
 import static java.util.Objects.requireNonNull;
 
@@ -7,7 +7,8 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import com.aajtech.fernet.core.Serializer;
+import org.nibiru.fernet.core.Serializer;
+
 import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 

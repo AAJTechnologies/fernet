@@ -1,4 +1,4 @@
-package com.aajtech.fernet.core;
+package org.nibiru.fernet.core;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
