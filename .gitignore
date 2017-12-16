@@ -19,3 +19,12 @@ bin
 # Gradle files
 .gradle
 build
+
+build
+.apt_generated
+.idea
+/**/*.iml
+/**/gradle/
+gradlew
+gradlew.bat
+local.properties
