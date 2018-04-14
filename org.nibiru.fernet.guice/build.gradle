@@ -1,3 +1,11 @@
+plugins {
+	id "me.tatarka.retrolambda" version "3.7.0"
+}
+
+retrolambda {
+	exclude 'Test', 'TestReport', 'test', 'testCompile'
+}
+
 dependencies {
 	compile project(":org.nibiru.fernet.core")
 	compile "com.google.inject.extensions:guice-servlet:4.1.0"

@@ -1,43 +1,51 @@
 allprojects {
-	version = '0.1-SNAPSHOT'
-	group = 'io.github.nibiruos.fernet'
+    version = '0.1-SNAPSHOT'
+    group = 'io.github.nibiruos.fernet'
 
-	repositories {
-		mavenLocal()
-	    mavenCentral()
-    	maven {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
-	    }
-	}
+        }
+    }
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath 'me.tatarka:gradle-retrolambda:3.7.0'
+        }
+    }
 }
 
 subprojects {
-	apply plugin: 'eclipse'
-	apply plugin: 'java'
-	apply plugin: 'maven'
-	apply plugin: 'maven-publish'
-	
-	publishing {
-	    publications {
-	        mavenJava(MavenPublication) {
-	            from components.java
-	        }
-	    }
-	    repositories {
-        	maven {
-				credentials {
-					username = sonatypeUser
-					password = sonatypePassword
-				}
-	            url "https://oss.sonatype.org/content/repositories/snapshots"
-    	    }
-    	}
-	}
+    apply plugin: 'eclipse'
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 
-	sourceCompatibility = 1.7
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                credentials {
+                    username = sonatypeUser
+                    password = sonatypePassword
+                }
+                url "https://oss.sonatype.org/content/repositories/snapshots"
+            }
+        }
+    }
 
-	dependencies {
-		compile "com.google.guava:guava:18.0"
-		testCompile "junit:junit:4.12"
-	}
+    sourceCompatibility = 1.8
+
+    dependencies {
+        compile "com.google.guava:guava:24.1-jre"
+        testCompile "junit:junit:4.12"
+    }
 }
