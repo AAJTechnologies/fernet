@@ -1,7 +1,11 @@
 package org.nibiru.fernet.core;
 
-public interface Serializer {
-	<T> T fromString(String data, Class<T> type);
+import javax.annotation.Nullable;
 
-	String toString(Object data);
+public interface Serializer {
+	@Nullable
+	<T> T fromString(@Nullable String data, Class<T> type);
+
+	@Nullable
+	String toString(@Nullable Object data);
 }

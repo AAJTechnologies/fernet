@@ -8,19 +8,12 @@ import org.nibiru.fernet.core.HttpMethod;
 import org.nibiru.fernet.core.MethodResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,15 +85,15 @@ public class JaxRsMethodResolver implements MethodResolver {
                 } else {
                     DefaultValue defaultValue = findAnnotation(
                             DefaultValue.class, annotations);
-                    values[n] = defaultValue != null ? defaultValue.value()
-                            : "";
+                    values[n] = Optional.ofNullable(defaultValue)
+                            .map(DefaultValue::value)
+                            .orElse(null);
                 }
             } else {
                 PathParam pathParan = findAnnotation(PathParam.class,
                         annotations);
                 if (pathParan != null) {
                     String pathParamStr = "{" + pathParan.value() + "}";
-                    values[n] = "";
                     Pattern pathPattern = methodDefinitions.inverse()
                             .get(method)
                             .pathPattern;
@@ -158,7 +151,7 @@ public class JaxRsMethodResolver implements MethodResolver {
     }
 
     private String pathToRegex(String path) {
-        return "^" + path.replaceAll("\\{.+?\\}", "(.+?)") + "$";
+        return "^" + path.replaceAll("\\{.+?\\}", "(.*?)") + "$";
     }
 
     private Annotation firstAnnotation(Method method,
