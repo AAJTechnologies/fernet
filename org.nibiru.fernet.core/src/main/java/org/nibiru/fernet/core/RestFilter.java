@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -22,14 +23,17 @@ import static java.util.Objects.requireNonNull;
 
 public class RestFilter implements Filter {
     private final MethodResolver methodResolver;
+    private final List<MethodExecutor> methodExecutors;
     private final ServiceProvider serviceProvider;
     private final Map<String, Serializer> serializers;
 
     @Inject
     public RestFilter(MethodResolver methodResolver,
+                      List<MethodExecutor> methodExecutors,
                       ServiceProvider serviceProvider,
                       Map<String, Serializer> serializers) {
         this.methodResolver = requireNonNull(methodResolver);
+        this.methodExecutors = requireNonNull(methodExecutors);
         this.serviceProvider = requireNonNull(serviceProvider);
         this.serializers = requireNonNull(serializers);
     }
@@ -51,14 +55,25 @@ public class RestFilter implements Filter {
                 Object[] args = parseStringArgs(
                         getStringArgs(req, path, method), req, method);
 
-                Object response = execute(method, args);
-
-                writeResponse(response, method, req, resp);
+                boolean found = false;
+                for (MethodExecutor executor : methodExecutors) {
+                    if (executor.canHandle(method)) {
+                        executor.execute(serviceProvider.getService(method.getDeclaringClass()),
+                                method,
+                                args)
+                                .thenAccept(response -> writeResponse(response,
+                                       method,
+                                       req,
+                                       resp));
+                        found = true;
+                        break;
+                    }
+                }
+                checkState(found, "No executor found for method %s", method);
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }
-        } catch (IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+        } catch (IllegalArgumentException e) {
             throw new ServletException(e);
         }
     }
@@ -93,24 +108,20 @@ public class RestFilter implements Filter {
         return args;
     }
 
-    private Object execute(Method method, Object[] args)
-            throws IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException {
-        return method.invoke(
-                serviceProvider.getService(method.getDeclaringClass()), args);
-    }
-
     private void writeResponse(Object response, Method method,
-                               HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        String mimeType = methodResolver.resolveRequestMimeType(method, req);
-        Serializer serializer = serializers.get(mimeType);
-        checkState(serializer != null, String.format(
-                "Response serializer for MIME type %s not found.", mimeType));
-        resp.setContentType(mimeType);
-        resp.getWriter().write(response != null
-                ? serializer.toString(response)
-                : "");
+                               HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            String mimeType = methodResolver.resolveRequestMimeType(method, req);
+            Serializer serializer = serializers.get(mimeType);
+            checkState(serializer != null, String.format(
+                    "Response serializer for MIME type %s not found.", mimeType));
+            resp.setContentType(mimeType);
+            resp.getWriter().write(response != null
+                    ? serializer.toString(response)
+                    : "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
