@@ -17,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.Preconditions.checkState;
 import static java.util.Objects.requireNonNull;
@@ -58,13 +59,14 @@ public class RestFilter implements Filter {
                 boolean found = false;
                 for (MethodExecutor executor : methodExecutors) {
                     if (executor.canHandle(method)) {
-                        executor.execute(serviceProvider.getService(method.getDeclaringClass()),
+                        Object response = executor.execute(serviceProvider.getService(method.getDeclaringClass()),
                                 method,
                                 args)
-                                .thenAccept(response -> writeResponse(response,
-                                       method,
-                                       req,
-                                       resp));
+                                .get();
+                        writeResponse(response,
+                                method,
+                                req,
+                                resp);
                         found = true;
                         break;
                     }
@@ -73,7 +75,7 @@ public class RestFilter implements Filter {
             } else {
                 filterChain.doFilter(servletRequest, servletResponse);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | InterruptedException | ExecutionException e) {
             throw new ServletException(e);
         }
     }
@@ -109,19 +111,15 @@ public class RestFilter implements Filter {
     }
 
     private void writeResponse(Object response, Method method,
-                               HttpServletRequest req, HttpServletResponse resp) {
-        try {
-            String mimeType = methodResolver.resolveRequestMimeType(method, req);
-            Serializer serializer = serializers.get(mimeType);
-            checkState(serializer != null, String.format(
-                    "Response serializer for MIME type %s not found.", mimeType));
-            resp.setContentType(mimeType);
-            resp.getWriter().write(response != null
-                    ? serializer.toString(response)
-                    : "");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                               HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String mimeType = methodResolver.resolveRequestMimeType(method, req);
+        Serializer serializer = serializers.get(mimeType);
+        checkState(serializer != null, String.format(
+                "Response serializer for MIME type %s not found.", mimeType));
+        resp.setContentType(mimeType);
+        resp.getWriter().write(response != null
+                ? serializer.toString(response)
+                : "");
     }
 
     @Override
