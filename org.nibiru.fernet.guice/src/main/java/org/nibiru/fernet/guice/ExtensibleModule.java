@@ -7,17 +7,15 @@ import org.nibiru.fernet.core.MethodResolver;
 import org.nibiru.fernet.core.jaxrs.JaxRsMethodResolver;
 
 import javax.annotation.Nonnull;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-public class RestServletModule extends AbstractModule {
+public class ExtensibleModule extends AbstractModule {
     private final String defaultContentType;
-    private Class<?>[] serviceClasses;
 
-    public RestServletModule(@Nonnull String defaultContentType,
-							 @Nonnull Class<?>... serviceClasses) {
+    public ExtensibleModule(String defaultContentType) {
         this.defaultContentType = requireNonNull(defaultContentType);
-        this.serviceClasses = requireNonNull(serviceClasses);
     }
 
     @Override
@@ -27,7 +25,8 @@ public class RestServletModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public MethodResolver getMethodResolver() {
-        return new JaxRsMethodResolver(defaultContentType, serviceClasses);
+    public MethodResolver getMethodResolver(@Nonnull @Service Set<Class<?>> serviceClasses) {
+        return new JaxRsMethodResolver(this.defaultContentType,
+                serviceClasses.toArray(new Class<?>[0]));
     }
 }
